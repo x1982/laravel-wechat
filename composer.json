@@ -1,0 +1,24 @@
+{
+    "name": "landers/laravel-wechat",
+    "description": "laravel-wechat",
+    "keywords": ["Landers", "myams", "wechat"],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "http://x1982.com",
+    "require": {
+        "php": ">=7.0"
+    },
+    "authors": [
+        {
+            "name": "Landers",
+            "email": "luhaixing@qq.com"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+        ],
+        "psr-4": {
+            "Landers\\Wechat\\": "src"
+        }
+    }
+}
