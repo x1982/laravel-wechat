@@ -1,10 +1,9 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Classes\Request;
-use Landers\Framework\Core\ArchiveModel;
-use Landers\Framework\Modules\Auth;
-use Landers\Framework\Core\Response;
+use Illuminate\Support\Facades\Request;
+use Landers\LaravelAms\Models\WechatMatchRuleModel;
+use Landers\LaravelAms\Models\WechatModel;
 
 class Wechat {
     use WechatConst, WechatToken, WechatHandle, WechatReply, WechatAuth, WechatMedia, WechatOpenId;
@@ -19,12 +18,13 @@ class Wechat {
      */
     public function __construct( $ukey ){
         trace('初始化微信应用模块');
-        $this->wcInfo = ArchiveModel::make('wechat')->find(array(
-            'awhere' => $ukey === true ? ['is_default' => 1] : ['md5_id' => $ukey]
-        ));
+        $where = $ukey === true ?
+            ['is_default', 1] :
+            ['md5_id', $ukey];
+        $this->wcInfo = app(WechatModel::class)->where($where)->first();
 
         if (!$this->wcInfo) {
-            Response::error('无效ukey！');
+            throw new \Exception('无效ukey！');
         } else {
             $this->wcInfo = (object)$this->wcInfo;
         }
@@ -37,7 +37,7 @@ class Wechat {
 
         if (!$openid = $this->getOpenid()) {
             trace('$this->getOpenid 未能获取到 openid');
-            if ($user = Auth::make('member')->check()) {
+            if ($user = \Auth::guard('member')->user()) {
                 $openid = WechatFans::findLocal($user['id'], 'openid');
                 trace('发现用户已登陆, 从本地户与粉丝关系中找到 openid');
             }
@@ -59,9 +59,7 @@ class Wechat {
     }
 
     public static function getDefault() {
-        $wc_info = ArchiveModel::make('wechat')->find([
-            'awhere' => ['is_default' => 1]
-        ]);
+        $wc_info = app(WechatModel::class)->where('is_default', 1)->first();
 
         if ($wc_info) {
             $wc_info['menu'] = json_decode($wc_info['menu'], true);
@@ -99,20 +97,18 @@ class Wechat {
     //根据关键词匹配回复内容
     private function matchRule($kw) {
         $kw = trim($kw);
-        $arc_rule = new ArchiveModel('wechat_rule');
         $awhere = array(
             'wechat_id' => $this->wcInfo->id,
         );
 
         //完全匹配
-        $id = $arc_rule->find(array(
-            'fields' => 'id',
-            'awhere' => array_merge($awhere, array(
+        $rule = app(WechatMatchRuleModel::class)->where(
+            array_merge($awhere, array(
                 'matchtype' => 'whole',
                 'keyword' => $kw
-            )),
-        ));
-        if ($id) return $id;
+            ))
+        );
+        if ( $id = $rule->id) return $id;
 
         //匹配正则
         $list = $arc_rule->lists(array(

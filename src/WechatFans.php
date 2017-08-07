@@ -1,7 +1,6 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Framework\Modules\Auth;
 use Landers\Framework\Core\ArchiveModel;
 use Landers\Substrate\Utils\Arr;
 
@@ -10,9 +9,9 @@ class WechatFans {
 
     use WechatToken, WechatOpenId;
 
-    private $appid, $appsecret;
+    private $appid, $appsecret, $model;
 
-    private static $archive;
+    private static $model;
 
     protected $wcId;
 
@@ -23,15 +22,12 @@ class WechatFans {
         $this->appid = $appid;
         $this->appsecret = $appsecret;
 
-        self::$archive = self::archive();
-        self::$archive->setBase('wechat_id', $this->wcId );
+        self::$model = app(WechatFans::class);
+        self::$model->where('wechat_id', $this->wcId );
     }
 
-    private static function archive() {
-        if ( !self::$archive ) {
-            self::$archive = ArchiveModel::make('wechat_fans');
-        }
-        return self::$archive;
+    private static function model() {
+        return app(WechatFans::class);
     }
 
 
@@ -59,19 +55,14 @@ class WechatFans {
         return $img;
     }
 
-    public static function findLocal($uid, $fields = NULL) {
-        return self::archive()->find([
-            'awhere' => ['uid' => $uid],
-            'fields' => $fields
-        ]);
+    public static function findLocal($uid, $fields = '*') {
+        return self::model()->select($fields)->where('uid', $uid)->first();
     }
 
     public function getLocalInfo() {
-        $info = self::archive()->find(array(
-            'awhere' => array('openid' => $this->openid),
-        ));
+        $info = self::model()->where('openid', $this->openid)->first();
         if (!$info) return array();
-        return self::unconvInfo($info);
+        return self::unconvInfo($info->toArray());
     }
 
     public function getInfo() {
@@ -120,15 +111,13 @@ class WechatFans {
             throw new \Exception('openid未获得');
         }
 
-        $info = self::archive()->find(array(
-            'fields'    => 'id, uid',
-            'awhere'    => array('openid' => $this->openid),
-        ));
+        $info = self::model()->select(['id', 'uid'])
+                ->where('openid', $this->openid)
+                ->first();
+
         if (!$info) return false;
         if ($info['uid']) return true;
-        $bool = self::archive()->debug(0)->update(
-            array('uid' => $userid), $info['id']
-        );
+        $bool = $info->update(['uid' => $userid]);
         trace('微信用户与本地用户绑定', $bool);
         return $bool;
     }
@@ -142,17 +131,12 @@ class WechatFans {
         if ( $this->exists() ) {
             $updata = Arr::slice($info, ['subscribe', 'subscribe_time']);
             trace('用户已存在，更新为关注状态');
-            self::archive()->update($updata, [
-                'openid' => $openid
-            ]);
-            return self::archive()->find([
-                'awhere' => ['openid' => $openid]
-            ]);
+            return self::model()->where('openid', $openid)->update($updata);
         } else {
             $info = self::convInfo($info);
             $info['openid'] = $openid;
             $info['wechat_id'] = $this->wcId;
-            $user = self::archive()->create($info);
+            $user = self::model()->create($info);
 
             trace(sprintf('openid入库%s', $user ? '成功' : '失败'), json_encode($info));
             if ( !$user ) throw new \Exception(sprintf('OpenId“%s”用户入库失败', $info['openid']));
@@ -162,7 +146,7 @@ class WechatFans {
 
     //删除用户
     public function unsubscribe() {
-        return self::archive()->update([
+        return self::model()->update([
             'subscribe' => 0
         ],[
             'openid' => $this->openid
@@ -181,7 +165,7 @@ class WechatFans {
         $data = array_merge($data, array(
             'update_date'   => date('Y-m-d'),
         ));
-        $bool = self::archive()->update($data, $awhere);
+        $bool = self::model()->update($data, $awhere);
         trace(sprintf('本地微信用户更新%s', $user ? '成功' : '失败'), $bool);
         return $bool;
     }
@@ -191,15 +175,7 @@ class WechatFans {
         if (!$this->openid) {
             throw new \Exception('openid未获得');
         }
-        $count = self::archive()->count(['openid' => $this->openid]);
+        $count = self::model()->count(['openid' => $this->openid]);
         return $count > 0;
-    }
-
-    //用openid登录本地用户
-    public function login(){
-        if (!$this->openid) {
-            throw new \Exception('openid未获得');
-        }
-        return Auth::user('member')->login_by_wechat($this->openid);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Classes\Url;
+use Illuminate\Support\Facades\URL;
 use Landers\Substrate\Classes\Client;
 
 trait WechatAuth {
@@ -30,7 +30,7 @@ trait WechatAuth {
     }
 
     public function authConnact(array $params = array()){
-        $url_callback = Url::current(true);
+        $url_callback = URL::current(true);
         $url_connect = WechatHelper::buildAuthLink($this->wcInfo, $url_callback);
         if (!Client::isPadDevice()) dp($url_connect);
         header("Location: $url_connect"); exit();
