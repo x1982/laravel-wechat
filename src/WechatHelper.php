@@ -1,12 +1,10 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 use Landers\Substrate\Utils\Json;
 use Landers\Substrate\Classes\ApiResult;
 use Landers\Substrate\Classes\Url;
-use Landers\Substrate\Classes\Tpl;
 use Landers\Substrate\Classes\FetchUrl;
-use Landers\Framework\Core\System;
 use Landers\Substrate\Classes\Request;
 
 class WechatHelper {

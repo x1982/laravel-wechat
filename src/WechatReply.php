@@ -1,11 +1,9 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 use Landers\Substrate\Utils\Str;
-use Landers\Substrate\Traits\MakeInstance;
 use Landers\Framework\Core\ArchiveModel;
 use Landers\Framework\Core\System;
-use Landers\Framework\Support\Image;
 
 /*微信回复类*/
 trait WechatReply {

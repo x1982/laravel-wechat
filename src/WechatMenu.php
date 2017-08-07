@@ -1,10 +1,8 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 use Landers\Substrate\Utils\Arr;
 use Landers\Substrate\Utils\Str;
-use Landers\Substrate\Utils\Json;
-use Landers\Substrate\Classes\FetchUrl;
 use Landers\Substrate\Classes\Url;
 
 /*菜单接口类*/

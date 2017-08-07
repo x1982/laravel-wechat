@@ -1,5 +1,5 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 /*二维码接口*/
 class WechatQRCode {

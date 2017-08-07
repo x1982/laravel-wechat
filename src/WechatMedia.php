@@ -1,5 +1,5 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 
 trait WechatMedia {

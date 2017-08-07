@@ -1,14 +1,10 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Cookie;
 use Landers\Substrate\Classes\Request;
 use Landers\Framework\Core\ArchiveModel;
 use Landers\Framework\Modules\Auth;
 use Landers\Framework\Core\Response;
-use Landers\Framework\Core\System;
-use Landers\Substrate\Classes\Url;
-use Landers\Framework\Core\Storage;
 
 class Wechat {
     use WechatConst, WechatToken, WechatHandle, WechatReply, WechatAuth, WechatMedia, WechatOpenId;

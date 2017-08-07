@@ -1,5 +1,5 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 use Landers\Framework\Core\ArchiveModel;
 

@@ -1,9 +1,8 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
 use Landers\Substrate\Utils\Cookie;
 use Landers\Substrate\Traits\MakeInstance;
-use Landers\Substrate\Classes\FetchUrl;
 
 /*微信Token类*/
 trait WechatToken {

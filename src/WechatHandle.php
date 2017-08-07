@@ -1,7 +1,6 @@
 <?php
-namespace Landers\Framework\Apps\Wechat;
+namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Str;
 use Landers\Framework\Core\ArchiveModel;
 
 trait WechatHandle {
