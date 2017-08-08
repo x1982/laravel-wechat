@@ -13,7 +13,6 @@ class WechatHelper {
         $signature  = Request::get('signature');
         $timestamp  = Request::get('timestamp');
         $nonce      = Request::get('nonce');
-        $token      = $token;
         $tmpArr     = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode($tmpArr);
@@ -71,10 +70,10 @@ class WechatHelper {
 
     //生成带openid参数的链接
     public static function buildOpenidLink($url, $wcInfo, $openid){
-        $params = array(
+        $params = [
             'ukey'      => $wcInfo->md5_id,
             'openid'    => $openid
-        );
+        ];
         $url = Url::build($url, $params, true);
         return $url;
     }

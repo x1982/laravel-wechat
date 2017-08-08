@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Framework\Core\ArchiveModel;
+use Landers\LaravelAms\Models\WechatMatchRuleModel;
 
 trait WechatHandle {
     protected function handleText() {
@@ -13,7 +13,7 @@ trait WechatHandle {
             trace('匹配到规则', '规则id:'.$rule_id);
         }
 
-        $rule_info = ArchiveModel::make('wechat_rule')->find($rule_id);
+        $rule_info = app(WechatMatchRuleModel::class)->find($rule_id);
         $rsp_content = trim($rule_info['response_data'], '[]');
         $rsp_type = $rule_info['response_type'];
         trace('规则信息', $rule_info);

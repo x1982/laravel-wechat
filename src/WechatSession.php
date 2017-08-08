@@ -2,8 +2,7 @@
 namespace Landers\Wechat;
 
 use Landers\Substrate\Traits\MakeInstance;
-use Landers\Framework\Core\Storage;
-use Landers\Substrate\Classes\Cache;
+use Redis;
 
 //缓存session
 class WechatSession {
@@ -12,17 +11,15 @@ class WechatSession {
 
     private static $blank = array('input' => array(), 'menu' => array());
 
-    private $openid, $cache, $data;
+    private $openid, $data;
 
     function __construct($openid) {
-        $path = ENV_PATH_PRIVATE_cache.'wechat/session/';
-        $this->cache = new Cache($path, $openid, Storage::class);
+        $this->openid = $openid;
         $this->read();
     }
 
     private function read(){
-        if ( !$this->cache ) return self::$blank;
-        if ($data = $this->cache->read()) {
+        if ($data = Redis::get($this->openid)) {
             $this->data = $data;
         } else {
             $this->data = self::$blank;
@@ -30,9 +27,7 @@ class WechatSession {
     }
 
     public function write(){
-        if ( !$this->cache ) return false;
-        $bool = $this->cache->write($this->data);
-        return $bool;
+        return Redis::set($this->openid, $this->data);
     }
 
     public function clear(){

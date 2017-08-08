@@ -1,9 +1,6 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Framework\Core\ArchiveModel;
-use Landers\Substrate\Utils\Arr;
-
 
 class WechatFans {
 
@@ -129,7 +126,7 @@ class WechatFans {
         $this->setOpenid($openid, true);
 
         if ( $this->exists() ) {
-            $updata = Arr::slice($info, ['subscribe', 'subscribe_time']);
+            $updata = array_only($info, ['subscribe', 'subscribe_time']);
             trace('用户已存在，更新为关注状态');
             return self::model()->where('openid', $openid)->update($updata);
         } else {

@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Framework\Core\ArchiveModel;
+use Landers\LaravelAms\Models\WechatMsgTemplateModel;
 
 /*微信消息推送类*/
 class WechatMessage {
@@ -18,8 +18,7 @@ class WechatMessage {
      * 取得模板
      */
     private static function getTemplate($tplid) {
-        $model = ArchiveModel::make('wechat_msg_template');
-        $tplkey = $model->find($tplid, 'tpl_id');
+        $tplkey = app(WechatMsgTemplateModel::class)->where('tplid', $tplid)->tpl_id;
         return $tplkey ? $tplkey : $tplid;
     }
 

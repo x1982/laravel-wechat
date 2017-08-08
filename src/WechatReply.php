@@ -2,8 +2,7 @@
 namespace Landers\Wechat;
 
 use Landers\Substrate\Utils\Str;
-use Landers\Framework\Core\ArchiveModel;
-use Landers\Framework\Core\System;
+use Landers\LaravelAms\Models\WechatReplyModel;
 
 /*微信回复类*/
 trait WechatReply {
@@ -14,17 +13,17 @@ trait WechatReply {
             return self::$msgs['no_define'];
         }
         $reply_id = Str::split($reply_id);
-        $lists = ArchiveModel::make('wechat_reply')->lists(array(
-            'is_page'   => false,
-            'fields'    => 'title, media, media_id, description, type, id, linkurl, linkurl_is_authorize',
-            'awhere'    => array('id' => $reply_id),
-            'is_conv_upload' => true,
-        ));
+        $lists = app(WechatReplyModel::class)
+                    ->select([
+                        'title', 'media', 'media_id', 'description',
+                        'type', 'id', 'linkurl', 'linkurl_is_authorize'
+                    ])
+                    ->find($reply_id);
         if (!$lists) return self::$msgs['no_define'];
         foreach ($lists as &$item) {
             if ($item['type'] == 'news') {
                 $linkurl = trim($item['linkurl']);
-                $linkurl or $linkurl = System::rewrite('wechat', 'news', array('id' => $item['id']), 1);
+                $linkurl or $linkurl = route('wechat.news', ['id' => $item['id']]);
                 $linkurl = WechatHelper::buildOpenidLink($linkurl, $this->wcInfo, $this->openid);
                 if ((int)$item['linkurl_is_authorize']) {
                     $linkurl = WechatHelper::buildAuthLink($this->wcInfo, $linkurl);
@@ -38,7 +37,7 @@ trait WechatReply {
     private function updateMediaId($reply_id, $media_id, $type = NULL) {
         $data = array('media_id' => $media_id);
         if ($type) $data['type'] = $type;
-        return ArchiveModel::make('wechat_reply')->update($data, array('id' => $reply_id));
+        return app(WechatReplyModel::class)->find($reply_id)->update($data);
     }
 
     public function replySend() {
