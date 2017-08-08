@@ -71,7 +71,7 @@ class WechatHelper {
     //生成带openid参数的链接
     public static function buildOpenidLink($url, $wcInfo, $openid){
         $params = [
-            'ukey'      => $wcInfo->md5_id,
+            'ukey'      => $wcInfo->ukey,
             'openid'    => $openid
         ];
         $url = Url::build($url, $params, true);

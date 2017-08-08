@@ -20,14 +20,15 @@ class WechatSession {
 
     private function read(){
         if ($data = Redis::get($this->openid)) {
-            $this->data = $data;
+            $this->data = json_decode($data, true);
         } else {
             $this->data = self::$blank;
         }
     }
 
     public function write(){
-        return Redis::set($this->openid, $this->data);
+        $content = json_encode($this->data, JSON_UNESCAPED_UNICODE);
+        return Redis::set($this->openid, $content);
     }
 
     public function clear(){

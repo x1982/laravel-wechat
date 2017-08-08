@@ -19,8 +19,8 @@ class Wechat {
     public function __construct( $ukey ){
         trace('初始化微信应用模块');
         $where = $ukey === true ?
-            ['is_default', 1] :
-            ['md5_id', $ukey];
+            ['is_default' => 1] :
+            ['ukey' => $ukey];
         $this->wcInfo = app(WechatModel::class)->where($where)->first();
 
         if (!$this->wcInfo) {
@@ -29,9 +29,10 @@ class Wechat {
             $this->wcInfo = (object)$this->wcInfo;
         }
 
-        if ( $tempMenu = &$this->wcInfo->menu) {
-            $tempMenu = json_decode($tempMenu);
-        }
+        //if ( $tempMenu = $this->wcInfo->menu) {
+        //    $tempMenu = json_decode($tempMenu);
+        //}
+        //dp($tempMenu);
         $this->appid = $this->wcInfo->wechat_appid;
         $this->appsecret = $this->wcInfo->wechat_appsecret;
 
@@ -58,23 +59,16 @@ class Wechat {
         );
     }
 
-    public static function getDefault() {
-        $wc_info = app(WechatModel::class)->where('is_default', 1)->first();
-
-        if ($wc_info) {
-            $wc_info['menu'] = json_decode($wc_info['menu'], true);
-        }
-
-        return $wc_info;
-    }
-
+    /**
+     * @return object
+     */
     public function getInfo() {
         return $this->wcInfo;
     }
 
     //从用户接收数据
     public function receive(){
-        $str_xml = $GLOBALS["HTTP_RAW_POST_DATA"];
+        $str_xml = array_get($GLOBALS, "HTTP_RAW_POST_DATA");
         $str_xml or $str_xml = file_get_contents("php://input");
         if ($str_xml) {
             $this->receives = simplexml_load_string($str_xml, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -101,24 +95,25 @@ class Wechat {
             'wechat_id' => $this->wcInfo->id,
         );
 
+        $model = app(WechatMatchRuleModel::class);
+
         //完全匹配
-        $rule = app(WechatMatchRuleModel::class)->where(
+        $rule = $model->where(
             array_merge($awhere, array(
                 'matchtype' => 'whole',
                 'keyword' => $kw
             ))
-        );
-        if ( $id = $rule->id) return $id;
+        )->first();
+        if ( $rule ) return $rule->id;
 
         //匹配正则
-        $list = $arc_rule->lists(array(
-            'is_page'   => false,
-            'fields'    => 'id, keyword',
-            'awhere'    => array_merge($awhere, array(
-                'matchtype' => 'regular'
-            )),
-            'order'     => 'id asc',
-        ));
+        $list = $model->where(
+            array_merge($awhere, array(
+                'matchtype' => 'regular',
+            ))
+        )->select(['id', 'keyword'])
+        ->orderBy('id', 'asc')->get();
+
         foreach($list as $item) {
             $reg = '/^'.$item['keyword'].'$/iu';
             try {
@@ -131,15 +126,15 @@ class Wechat {
         }
 
         //模糊匹配
-        $id = $arc_rule->find(array(
-            'fields'    => 'id',
-            'awhere'    => array_merge($awhere, array(
+        $rule = $model->where(
+            array_merge($awhere, array(
                 'matchtype' => 'fuzzy',
-                "keyword like '%$kw%'"
-            )),
-            'order'     => 'id desc',
-        ));
-        if ( !$id ) return $id;
+            ))
+        )->where('keyword', 'like', "%{$kw}%")
+        ->orderBy('id', 'desc')
+        ->first();
+
+        if ( $rule ) return $rule->id;
 
         return NULL;
     }

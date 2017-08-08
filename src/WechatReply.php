@@ -51,16 +51,11 @@ trait WechatReply {
             if (!$pack = func_get_arg(0)) {
                 $this->replyError('inavlid');
             }
-
-            if (is_string($pack)) {
-                $pack = json_decode($pack);
-            }
-
             if (!$pack) {
                 $this->replyError('cant_parse_pack');
             } else {
-                $type = $pack->response_type;
-                $data = $pack->response_data;
+                $type = $pack['response_type'];
+                $data = $pack['response_data'];
             }
 
             if (!$type && !$data) $this->replyError('no_define');
@@ -153,11 +148,12 @@ trait WechatReply {
 
     //回应文本
     public function replyText($text){
-        if ( ENV_DEBUG_client === true ) {
-            $deepth = '(当前层级：'.$this->wcSession->deepth('input').')';
-        } else {
-            $deepth = '';
-        }
+        //if ( ENV_DEBUG_client === true ) {
+        //    $deepth = '(当前层级：'.$this->wcSession->deepth('input').')';
+        //} else {
+        //    $deepth = '';
+        //}
+        $deepth = '';
         $this->replySend('text', $text.$deepth);
     }
 

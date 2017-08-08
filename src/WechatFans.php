@@ -1,12 +1,13 @@
 <?php
 namespace Landers\Wechat;
 
+use Landers\LaravelAms\Models\WechatFansModel;
 
 class WechatFans {
 
     use WechatToken, WechatOpenId;
 
-    private $appid, $appsecret, $model;
+    private $appid, $appsecret;
 
     private static $model;
 
@@ -19,7 +20,7 @@ class WechatFans {
         $this->appid = $appid;
         $this->appsecret = $appsecret;
 
-        self::$model = app(WechatFans::class);
+        self::$model = app(WechatFansModel::class);
         self::$model->where('wechat_id', $this->wcId );
     }
 

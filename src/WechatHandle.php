@@ -99,7 +99,7 @@ trait WechatHandle {
         } else {
             trace('通过关键词搜索关注');
         }
-        $on_subscribe = json_decode($this->wcInfo->on_subscribe);
+        $on_subscribe = $this->wcInfo->on_subscribe;
         if ($on_subscribe && !$on_subscribe->response_data) {
             $msgTpl = '{"response_type":"text","response_data":"感谢关注%s。"}';
             $on_subscribe = sprintf($msgTpl, $this->wcInfo->title);
