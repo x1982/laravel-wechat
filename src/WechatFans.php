@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\LaravelAms\Models\WechatFansModel;
+use Landers\AmsApp\Globals\Models\Bus\WechatFansModel;
 
 class WechatFans {
 
@@ -175,5 +175,14 @@ class WechatFans {
         }
         $count = self::model()->count(['openid' => $this->openid]);
         return $count > 0;
+    }
+
+    public static function getOpenids( array $where )
+    {
+        return WechatFansModel::select('openid')
+            ->where($where)
+            ->get()
+            ->pluck('openid')
+            ->toArray();
     }
 }

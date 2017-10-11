@@ -2,8 +2,8 @@
 namespace Landers\Wechat;
 
 use Illuminate\Support\Facades\Request;
-use Landers\LaravelAms\Models\WechatMatchRuleModel;
-use Landers\LaravelAms\Models\WechatModel;
+use Landers\AmsApp\Globals\Models\Bus\WechatMatchRuleModel;
+use Landers\AmsApp\Globals\Models\Bus\WechatModel;
 
 class Wechat {
     use WechatConst, WechatToken, WechatHandle, WechatReply, WechatAuth, WechatMedia, WechatOpenId;
@@ -57,6 +57,24 @@ class Wechat {
             $openid,
             $this->wcInfo->id
         );
+    }
+
+    /**
+     * 取得默认
+     * @return mixed
+     */
+    public static function getDefault( $fields = null) {
+        $wc_info = WechatModel::where('is_default', 1)->first();
+        if ( !$wc_info ) {
+            throw new \Exception('未找到默认公众号');
+        }
+
+        if ( $fields ) {
+            $wc_info = $wc_info->toArray();
+            $wc_info = array_only( $wc_info, $fields );
+        }
+
+        return $wc_info;
     }
 
     /**

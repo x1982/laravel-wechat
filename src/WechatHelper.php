@@ -1,11 +1,10 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Json;
 use Landers\Substrate\Classes\ApiResult;
 use Landers\Substrate\Classes\Url;
 use Landers\Substrate\Classes\FetchUrl;
-use Landers\Substrate\Classes\Request;
+use Illuminate\Support\Facades\Request;
 
 class WechatHelper {
     //检查安全合法性
@@ -27,7 +26,7 @@ class WechatHelper {
 
     public static function httpPost($url, $data, $is_hd_data = true) {
         if ($is_hd_data) {
-            $data = Json::encode($data);
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
             $data = stripslashes($data);
         }
         $ret = FetchUrl::post($url, $data);
