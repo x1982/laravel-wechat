@@ -1,8 +1,8 @@
 <?php
 namespace Landers\Wechat;
 
+use Landers\AmsApp\Globals\Models\Bus\WechatReplyModel;
 use Landers\Substrate\Utils\Str;
-use Landers\LaravelAms\Models\WechatReplyModel;
 
 /*微信回复类*/
 trait WechatReply {

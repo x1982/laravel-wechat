@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\LaravelAms\Models\WechatMatchRuleModel;
+use Landers\AmsApp\Globals\Models\Bus\WechatMatchRuleModel;
 
 trait WechatHandle {
     protected function handleText() {

@@ -2,7 +2,7 @@
 namespace Landers\Wechat;
 
 use Landers\Substrate\Traits\MakeInstance;
-use Redis;
+use PhpRedis as Redis;
 
 //缓存session
 class WechatSession {
