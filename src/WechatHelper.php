@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Classes\ApiResult;
+use Landers\Substrate2\Classes\ApiResult;
 use Landers\Substrate\Classes\Url;
 use Landers\Substrate\Classes\FetchUrl;
 use Illuminate\Support\Facades\Request;
