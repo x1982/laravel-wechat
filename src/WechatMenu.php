@@ -1,8 +1,8 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Arr;
-use Landers\Substrate\Utils\Str;
+use Landers\Substrate2\Utils\Arr;
+use Landers\Substrate2\Utils\Str;
 use Landers\Substrate\Classes\Url;
 
 /*菜单接口类*/

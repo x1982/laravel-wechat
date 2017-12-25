@@ -2,11 +2,10 @@
 namespace Landers\Wechat;
 
 use Landers\Substrate\Classes\Url;
-use Landers\Substrate\Traits\MakeInstance;
 
 /*微信推送数据打包类*/
 class WechatPacker {
-    use MakeInstance;
+    use \Landers\Substrate2\Traits\MakeInstanceTrait;
 
     private $from, $to;
 

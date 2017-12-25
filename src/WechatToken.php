@@ -1,12 +1,12 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Cookie;
-use Landers\Substrate\Traits\MakeInstance;
+use Landers\Substrate2\Utils\Cookie;
 
 /*微信Token类*/
 trait WechatToken {
-    use MakeInstance;
+    use \Landers\Substrate2\Traits\MakeInstanceTrait;
+
 
     private static $apihost = 'https://api.weixin.qq.com';
 

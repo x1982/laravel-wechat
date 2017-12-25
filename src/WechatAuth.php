@@ -2,7 +2,6 @@
 namespace Landers\Wechat;
 
 use Illuminate\Support\Facades\URL;
-//use Landers\Substrate\Classes\Client;
 
 trait WechatAuth {
     public function authByCode($code) {

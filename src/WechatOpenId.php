@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Utils\Cookie;
+use Landers\Substrate2\Classes\Cookie;
 
 trait WechatOpenId {
     public $openid;

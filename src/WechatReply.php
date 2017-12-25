@@ -2,7 +2,7 @@
 namespace Landers\Wechat;
 
 use Landers\AmsApp\Globals\Models\Bus\WechatReplyModel;
-use Landers\Substrate\Utils\Str;
+use Landers\Substrate2\Utils\Str;
 
 /*微信回复类*/
 trait WechatReply {

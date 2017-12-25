@@ -1,13 +1,13 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Traits\MakeInstance;
-use PhpRedis as Redis;
-
 //缓存session
+
+use Illuminate\Support\Facades\Cache;
+
 class WechatSession {
 
-    use MakeInstance;
+    use \Landers\Substrate2\Traits\MakeInstanceTrait;
 
     private static $blank = array('input' => array(), 'menu' => array());
 
@@ -19,7 +19,7 @@ class WechatSession {
     }
 
     private function read(){
-        if ($data = Redis::get($this->openid)) {
+        if ($data = Cache::get($this->openid)) {
             $this->data = json_decode($data, true);
         } else {
             $this->data = self::$blank;
@@ -28,7 +28,7 @@ class WechatSession {
 
     public function write(){
         $content = json_encode($this->data, JSON_UNESCAPED_UNICODE);
-        return Redis::set($this->openid, $content);
+        Cache::forever($this->openid, $content);
     }
 
     public function clear(){
