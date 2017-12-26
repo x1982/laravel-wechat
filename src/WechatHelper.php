@@ -2,8 +2,7 @@
 namespace Landers\Wechat;
 
 use Landers\Substrate2\Classes\ApiResult;
-use Landers\Substrate\Classes\Url;
-use Landers\Substrate\Classes\FetchUrl;
+use Landers\Substrate2\Classes\Http;
 use Illuminate\Support\Facades\Request;
 
 class WechatHelper {
@@ -20,17 +19,28 @@ class WechatHelper {
     }
 
     public static function httpGet($url) {
-        $ret = FetchUrl::get($url);
-        return self::httpReturn($ret);
+        $http = (new Http())->get($url);
+        if ( $http->success() ) {
+            $ret = $http->contents();
+            return self::httpReturn($ret);
+        } else {
+            return ApiResult::make('通信失败');
+        }
     }
 
     public static function httpPost($url, $data, $is_hd_data = true) {
+        $http = new Http();
         if ($is_hd_data) {
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
-            $data = stripslashes($data);
+            $http->postJson($url, $data);
+        } else {
+            $http->post($url, $data);
         }
-        $ret = FetchUrl::post($url, $data);
-        return self::httpReturn($ret);
+        if ( $http->success() ) {
+            $ret = $http->contents();
+            return self::httpReturn($ret);
+        } else {
+            return ApiResult::make('通信失败');
+        }
     }
 
     //解析返回

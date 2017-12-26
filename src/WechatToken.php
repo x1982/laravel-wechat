@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate2\Utils\Cookie;
+use Landers\Substrate2\Classes\Cookie;
 
 /*微信Token类*/
 trait WechatToken {
