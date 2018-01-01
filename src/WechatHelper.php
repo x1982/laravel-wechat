@@ -6,7 +6,12 @@ use Landers\Substrate2\Classes\Http;
 use Illuminate\Support\Facades\Request;
 
 class WechatHelper {
-    //检查安全合法性
+    /**
+     * 检查安全合法性
+     *
+     * @param $token
+     * @return bool
+     */
     public static function check($token) {
         $signature  = Request::get('signature');
         $timestamp  = Request::get('timestamp');
@@ -18,7 +23,13 @@ class WechatHelper {
         return $tmpStr == $signature;
     }
 
-    public static function httpGet($url) {
+    /**
+     * 发送http get请求
+     *
+     * @param string $url
+     * @return mixed
+     */
+    public static function httpGet(string $url) {
         $http = (new Http())->get($url);
         if ( $http->success() ) {
             $ret = $http->contents();
@@ -28,7 +39,15 @@ class WechatHelper {
         }
     }
 
-    public static function httpPost($url, $data, $is_hd_data = true) {
+    /**
+     * 发送http post请求
+     *
+     * @param string $url
+     * @param array $data
+     * @param bool $is_hd_data
+     * @return mixed
+     */
+    public static function httpPost(string $url, array $data, $is_hd_data = true) {
         $http = new Http();
         if ($is_hd_data) {
             $http->postJson($url, $data);
