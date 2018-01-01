@@ -6,7 +6,8 @@
     "license": "MIT",
     "homepage": "http://x1982.com",
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "landers/laravel-myams-framework": "^0.1.0"
     },
     "authors": [
         {
