@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Wechat;
 
-use Landers\Substrate\Classes\Url;
+use Landers\Substrate2\Utils\Url;
 
 /*微信推送数据打包类*/
 class WechatPacker {
@@ -86,7 +86,7 @@ class WechatPacker {
         $news = '';
         foreach ($pack as $item) {
             if ($item['image_url']) {
-                $item['image_url'] = Url::toHttp($item['image_url']);
+                $item['image_url'] = Url::toAbsolute($item['image_url']);
                 $item['link_url'] or $item['link_url'] = $item['image_url'];
             }
             $news .= sprintf($itemTpl, $item['title'], $item['description'], $item['image_url'], $item['link_url']);
