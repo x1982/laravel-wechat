@@ -143,7 +143,7 @@ trait WechatReply {
     //回应单图文
     public function replyNews($title, $description, $link_url, $image_url = NULL){
         $data = $this->buildNews($title, $description, $link_url, $image_url);
-        return $this->replySend('news', array($data));
+        $this->replySend('news', [$data]);
     }
 
     //回应文本
